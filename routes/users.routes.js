@@ -3,6 +3,7 @@ const express = require('express');
 const { protectSession, protectUserAccount } = require('../middlewares/auth.middlewares');
 const { userExist } = require('../middlewares/users.middlewares');
 const { orderExist } = require('../middlewares/orders.middlewares');
+const { createUsersValidator } = require('../middlewares/validators.middlewares');
 
 const {
 createUser,
@@ -19,7 +20,7 @@ const usersRouter = express.Router();
 
 usersRouter.get('/', getAllUsers);
 
-usersRouter.post('/', createUser);
+usersRouter.post('/', createUsersValidator, createUser);
 
 usersRouter.post('/login', login);
 

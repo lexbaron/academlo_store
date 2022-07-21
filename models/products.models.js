@@ -42,10 +42,6 @@ const Product = database.define('product', {
             key: 'id'
         }
     },
-    categoryId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
     status: {
         type: DataTypes.STRING,
         allowNull: false,
