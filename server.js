@@ -5,6 +5,8 @@ const { Order } = require('./models/orders.models');
 const { ProductImage } = require('./models/productImgs.models');
 const { ProductsInCart } = require('./models/productsInCart.models');
 
+const { initModels } = require('./models/initModels');
+
 
 const { database } = require('./utils/database.utils');
 
@@ -28,10 +30,14 @@ database.authenticate()
 //     .then(console.log('database synced'))
 //     .catch(err => console.log(err));
 
-database.sync({})
+initModels();
+
+database.sync({force: false})
     .then(console.log('database synced'))
     .catch(err => console.log(err));
 
-app.listen('4000', () =>{
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () =>{
     console.log('server is running!');
 });
