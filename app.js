@@ -32,9 +32,9 @@ app.use(helmet());
 app.use(compression());
 
 if(process.env.NODE_ENV === 'development'){
-    app.usr(morgan('dev'));
+    app.use(morgan('dev'));
 }else{
-    app.usr(morgan('combined'));
+    app.use(morgan('combined'));
 }
 
 app.all('*', ( req, res, next ) => {
