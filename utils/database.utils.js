@@ -16,7 +16,7 @@ const database = new Sequelize ({
         process.env.NODE_ENV === 'production' ?
         { ssl: {
             require: true,
-            PromiseRejectionEvent: false
+            rejectUnauthorized: false
         },} : {}
 });
 
