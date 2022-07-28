@@ -29,4 +29,25 @@ const createUsersValidator = [
     checkResult
 ];
 
+const createProductsValidator = [
+    body('title').notEmpty().withMessage('title cannot be empty').isString().withMessage('must provide a string'),
+    body('description').notEmpty().withMessage('description cannot be empty').isString().withMessage('must provide a string'),
+    body('price').
+    notEmpty().
+    withMessage('price cannot be empty').
+    isNumeric().
+    withMessage('price must be a number'),
+    body('categoryId').
+    notEmpty().
+    withMessage('category id cannot be empty').
+    isNumeric().
+    withMessage('category id must be a number'),
+    body('quantity').
+    notEmpty().
+    withMessage('quantity cannot be empty').
+    isNumeric().
+    withMessage('quantity must be a number'),
+    checkResult
+];
+
 module.exports = { createUsersValidator };

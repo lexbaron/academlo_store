@@ -44,4 +44,14 @@ const protectUserAccount = catchAsync( async(req, res, next) => {
 	next();
 });
 
-module.exports = { protectSession, protectUserAccount };
+const protectUserProducts = catchAsync( async(req, res, next) => {
+	const { sessionUser, product } = req;
+
+	if (sessionUser.id !== product.UserId) {
+		return next(new AppError('You do not create this product', 403));
+	};
+
+	next();
+});
+
+module.exports = { protectSession, protectUserAccount, protectUserProducts };

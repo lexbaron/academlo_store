@@ -3,6 +3,7 @@ const { ProductsInCart } = require('../models/productsInCart.models');
 const { User } = require('../models/users.models');
 const { Product } = require('../models/products.models');
 const { Order } = require('../models/orders.models');
+const { Category } = require('../models/categories.models');
 
 const { AppError } = require('../utils/appError.utils');
 const { catchAsync } = require('../utils/catchAsync.utils');
@@ -38,7 +39,7 @@ const addProductToCart = catchAsync( async(req, res, next) => {
                 
                 res.status(200).json({
                     status: 'success',
-                    productInCart
+                    productExist
                 });
             }else if(productExist.status === 'active'){
                 return next( new AppError('this product already exist on this cart!', 404));
@@ -157,18 +158,30 @@ const purchaseCart = catchAsync( async (req, res, next) => {
 const getAllProductsInCart = catchAsync( async (req, res, next) => {
     const { sessionUser } = req;
 
-    const userCart = await Cart.findOne({ where: {userId: sessionUser.id, status: 'active'} });
+    const userCart = await Cart.findOne({ 
+        attributes: ['id', 'userId', 'status'],
+        where: {userId: sessionUser.id, status: 'active'},
+        include:[ 
+            {
+                model: ProductsInCart, 
+                attributes: ['quantity', 'status'],
+                include: {
+                    model: Product, 
+                    attributes: ['id', 'title', 'description', 'quantity', 'price', 'status'],
+                    include: {model: Category, attributes: ['id', 'name', 'status']}
+                }
+            },
+            {model: User, attributes: ['id', 'username', 'email', 'status']}
+        ]
+    });
 
     if(!userCart){
         return next( new AppError('this user does not have a cart', 404));
     };
 
-    const productsInCart = await ProductsInCart.findAll({ where: {cartId: userCart.id} });
-
     res.status(200).json({
         status: 'success',
-        userCart,
-        productsInCart
+        userCart
     });
 });
 

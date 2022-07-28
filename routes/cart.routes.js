@@ -8,7 +8,6 @@ const { addProductToCart,
 } = require('../controllers/cart.controllers');
 
 const { protectSession } = require('../middlewares/auth.middlewares');
-const { productInCartExist } = require('../middlewares/productCart.middlewares');
 
 const cartRouter = express.Router();
 

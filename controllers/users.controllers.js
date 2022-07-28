@@ -6,6 +6,7 @@ const { User } = require('../models/users.models');
 const { Product } = require('../models/products.models');
 const { Order } = require('../models/orders.models');
 const { Cart } = require('../models/carts.models');
+const { ProductsInCart } = require('../models/productsInCart.models');
 
 const { catchAsync } = require('../utils/catchAsync.utils');
 const { AppError } = require('../utils/appError.utils');
@@ -105,7 +106,25 @@ const deleteUser = catchAsync( async( req, res, next ) => {
 const getAllUserOrders = catchAsync( async( req, res, next ) => {
     const { sessionUser } = req;
 
-    const userOrders = await Order.findAll({ where: {userId: sessionUser.id} });
+    const userOrders = await Order.findAll({ 
+        attributes: ['id', 'totalPrice'],
+        where: {userId: sessionUser.id},
+        include: {
+            model: Cart,
+            attributes: ['id', 'status'],
+            include: [
+                {model: User, attributes: ['id', 'email', 'status']},
+                {
+                    model: ProductsInCart, 
+                    attributes: ['quantity', 'status'],
+                    include: {
+                        model: Product,
+                        attributes: ['id', 'title', 'price']
+                    }
+                }
+            ]
+        }
+    });
 
     res.status(200).json({
         status: 'success',
@@ -117,7 +136,23 @@ const getUserOrdersById = catchAsync( async( req, res, next ) => {
     const { sessionUser } = req;
     const { id } = req.params;
 
-    const userOrder = await Order.findOne({ where: { id, userId: sessionUser.id} });
+    const userOrder = await Order.findOne({  attributes: ['id', 'totalPrice'],
+    where: {id, userId: sessionUser.id},
+    include: {
+        model: Cart,
+        attributes: ['id', 'status'],
+        include: [
+            {model: User, attributes: ['id', 'email', 'status']},
+            {
+                model: ProductsInCart, 
+                attributes: ['quantity', 'status'],
+                include: {
+                    model: Product,
+                    attributes: ['id', 'title', 'price']
+                }
+            }
+        ]
+    } });
 
     if(!userOrder){
         return next(new AppError('order not found', 404));
