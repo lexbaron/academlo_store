@@ -30,6 +30,11 @@ const addProductToCart = catchAsync( async(req, res, next) => {
             productId,
             quantity,
         });
+
+        res.status(200).json({
+            status: 'success',
+            newCart
+        });
     }else{
         const productExist = await ProductsInCart.findOne({ where: {productId, cartId: cart.id}});
 
